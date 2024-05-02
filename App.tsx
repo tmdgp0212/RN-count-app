@@ -34,6 +34,8 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  // RN은 기본적으로 flex/column. 높이는 컨텐츠에 필요한 양만큼만 자리를 차지
+  // root에 flex:1 스타일을 먹여야 화면 전체를 차지하게 됨.
   rootScreen: {
     flex: 1,
     backgroundColor: "#e8f0ff",
