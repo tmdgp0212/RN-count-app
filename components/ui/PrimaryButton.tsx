@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Colors from "../../constants/colors";
 
 // touchable은 더이상 권장하지 않음. 터치 가능한 영역은 pressable 컴포넌트 사용 권장.
 
@@ -19,7 +20,7 @@ const PrimaryButton = ({ onPress, customStyle, children }: Props) => {
       <Pressable
         onPress={onPress}
         style={({ pressed }) => (pressed ? [style.pressd] : [])}
-        android_ripple={{ color: "#032955" }} // android 물결효과 
+        android_ripple={{ color: Colors.primary600 }} // android 물결효과
       >
         <Text style={[style.buttonText, customStyle?.buttonText]}>
           {children}
@@ -32,7 +33,7 @@ const PrimaryButton = ({ onPress, customStyle, children }: Props) => {
 const style = StyleSheet.create({
   buttonContainer: {
     margin: 4,
-    backgroundColor: "#042c81",
+    backgroundColor: Colors.primary500,
     borderRadius: 20,
     elevation: 2, // android 그림자 설정
     overflow: "hidden", // android_ripple의 물결효과가 영역을 벗어날 수 있으므로 overflow-hidden 속성 부여

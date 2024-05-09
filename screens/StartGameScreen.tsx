@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Alert, TextInput, View } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import PrimaryButton from "../components/ui/PrimaryButton";
 import { StyleSheet } from "react-native";
+import Colors from "../constants/colors";
 
 interface Props {
   onPickNumber: (number: number) => void;
@@ -73,15 +74,14 @@ const StartGameScreen = ({ onPickNumber }: Props) => {
   );
 };
 
-
-// ReactNative에는 상속의 개념이 없어 상위 요소에 설정한 
+// ReactNative에는 상속의 개념이 없어 상위 요소에 설정한
 const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 100,
     marginHorizontal: 24,
     padding: 16,
     alignItems: "center",
-    backgroundColor: "#17034e",
+    backgroundColor: Colors.primary800,
     borderRadius: 8,
 
     /* 모바일에는 boxShadow 속성이 없음 */
@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     width: 50,
     height: 50,
-    color: "#ddb52f",
+    color: Colors.accent500,
     fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
-    borderBottomColor: "#ddb52f",
+    borderBottomColor: Colors.accent500,
     borderBottomWidth: 1,
   },
   // RN의 View 컴포넌트는 기본적으로 flex, column
