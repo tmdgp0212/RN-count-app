@@ -16,7 +16,15 @@ function generateRandomBetween(min: number, max: number, exclude: number) {
 let min = 1;
 let max = 100;
 
-const GameScreen = ({ userNumber }: { userNumber: number }) => {
+const GameScreen = ({
+  userNumber,
+  onGameOver,
+  onRestart,
+}: {
+  userNumber: number;
+  onGameOver: () => void;
+  onRestart: () => void;
+}) => {
   const initialBuess = generateRandomBetween(min, max, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialBuess);
 
@@ -38,7 +46,8 @@ const GameScreen = ({ userNumber }: { userNumber: number }) => {
     setCurrentGuess(nextNum);
 
     if (nextNum === userNumber) {
-      return Alert.alert("성공! 선택한 숫자는" + nextNum + "입니다!");
+      Alert.alert("성공! 선택한 숫자는" + nextNum + "입니다!");
+      return onGameOver();
     }
   };
 
@@ -66,6 +75,9 @@ const GameScreen = ({ userNumber }: { userNumber: number }) => {
         </View>
       </View>
       <View></View>
+      <View>
+        <PrimaryButton onPress={onRestart}>reset</PrimaryButton>
+      </View>
     </View>
   );
 };

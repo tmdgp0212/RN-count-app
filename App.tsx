@@ -10,11 +10,23 @@ import StartGameScreen from "./screens/StartGameScreen";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/colors";
 import { StatusBar } from "expo-status-bar";
+import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
   const [pickedNumber, setPickedNumber] = useState<number | null>(null);
+  const [gameIsOver, setGameIsOver] = useState(false);
+
   const pickNumberHandler = (number: number) => {
     setPickedNumber(number);
+  };
+
+  const gameOverHandler = () => {
+    setGameIsOver(true);
+  };
+
+  const resetGameHandler = () => {
+    setPickedNumber(null);
+    setGameIsOver(false);
   };
   return (
     <>
@@ -35,8 +47,14 @@ export default function App() {
             // SafeAreaView : 컨텐츠가 모바일 화면 상단의 노치와 겹치지 않도록 조절
             style={styles.screen}
           >
-            {pickedNumber ? (
-              <GameScreen userNumber={pickedNumber} />
+            {gameIsOver ? (
+              <GameOverScreen onRestart={resetGameHandler} />
+            ) : pickedNumber ? (
+              <GameScreen
+                userNumber={pickedNumber}
+                onGameOver={gameOverHandler}
+                onRestart={resetGameHandler}
+              />
             ) : (
               <StartGameScreen onPickNumber={pickNumberHandler} />
             )}
