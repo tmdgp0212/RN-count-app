@@ -3,6 +3,8 @@ import { Alert, TextInput, View } from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { StyleSheet } from "react-native";
 import Colors from "../constants/colors";
+import Title from "../components/ui/Title";
+import { AntDesign } from "@expo/vector-icons";
 
 interface Props {
   onPickNumber: (number: number) => void;
@@ -45,40 +47,41 @@ const StartGameScreen = ({ onPickNumber }: Props) => {
   };
 
   return (
-    <View style={styles.inputContainer}>
-      {/* keyboardType 설정으로 숫자 입력만 가능한 input으로 변경 */}
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none" // 자동완성
-        autoCorrect={false} // 자동수정
-        onChangeText={inputChangeHandler}
-        value={numberInput || ""}
-      />
-      <View style={styles.buttonsContainer}>
-        <PrimaryButton
-          customStyle={{ buttonContainer: styles.buttonContainer }}
-          onPress={resetInputHandler}
-        >
-          Reset
-        </PrimaryButton>
-        <PrimaryButton
-          customStyle={{ buttonContainer: styles.buttonContainer }}
-          onPress={confirmInputHandler}
-        >
-          Confirm
-        </PrimaryButton>
+    <>
+      <Title text={"Enter a Number"} />
+      <View style={styles.inputContainer}>
+        {/* keyboardType 설정으로 숫자 입력만 가능한 input으로 변경 */}
+        <TextInput
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          autoCapitalize="none" // 자동완성
+          autoCorrect={false} // 자동수정
+          onChangeText={inputChangeHandler}
+          value={numberInput || ""}
+        />
+        <View style={styles.buttonsContainer}>
+          <PrimaryButton
+            customStyle={{ buttonContainer: styles.buttonContainer }}
+            onPress={resetInputHandler}
+          >
+            Reset
+          </PrimaryButton>
+          <PrimaryButton
+            customStyle={{ buttonContainer: styles.buttonContainer }}
+            onPress={confirmInputHandler}
+          >
+            Confirm
+          </PrimaryButton>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
 // ReactNative에는 상속의 개념이 없어 상위 요소에 설정한
 const styles = StyleSheet.create({
   inputContainer: {
-    marginTop: 100,
-    marginHorizontal: 24,
     padding: 16,
     alignItems: "center",
     backgroundColor: Colors.primary800,

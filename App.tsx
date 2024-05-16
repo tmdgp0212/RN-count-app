@@ -1,33 +1,59 @@
-import { useState } from "react";
-import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  ImageBackground,
+  SafeAreaView,
+  Dimensions,
+  useWindowDimensions,
+} from "react-native";
 
-// expo install expo-linear-gradient
 // npm i -> expo i : 현재 RN 버전에 알맞은 버전을 찾아 설치해줌.
-import {LinearGradient} from 'expo-linear-gradient'
-
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import { useFonts } from "expo-font";
+import SplashScreen from "expo-splash-screen";
 
 import StartGameScreen from "./screens/StartGameScreen";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/colors";
-import { StatusBar } from "expo-status-bar";
 import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
+  const [fontLoaded, fontError] = useFonts({
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+
   const [pickedNumber, setPickedNumber] = useState<number | null>(null);
+  const [roundNumber, setRoundNumber] = useState(0);
   const [gameIsOver, setGameIsOver] = useState(false);
 
   const pickNumberHandler = (number: number) => {
     setPickedNumber(number);
   };
 
-  const gameOverHandler = () => {
+  const gameOverHandler = (round: number) => {
     setGameIsOver(true);
+    setRoundNumber(round);
   };
 
   const resetGameHandler = () => {
     setPickedNumber(null);
+    setRoundNumber(0);
     setGameIsOver(false);
   };
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontLoaded]);
+
+  useEffect(() => {
+    onLayoutRootView;
+  }, [fontLoaded]);
+
+  if (!fontLoaded) return null;
+
   return (
     <>
       <StatusBar style="auto" />
@@ -39,7 +65,7 @@ export default function App() {
         <ImageBackground
           // ImageBackground는 View와 Image 태그의 조합
           source={require("./assets/images/background.png")}
-          style={styles.screen} // View컴포넌트에 적용되는 스타일
+          style={styles.backgroundContainer} // View컴포넌트에 적용되는 스타일
           imageStyle={styles.backgroundImage} // Image컴포넌트에 적용되는 스타일
           resizeMode="cover"
         >
@@ -48,7 +74,11 @@ export default function App() {
             style={styles.screen}
           >
             {gameIsOver ? (
-              <GameOverScreen onRestart={resetGameHandler} />
+              <GameOverScreen
+                roundsNumber={roundNumber}
+                userNumber={pickedNumber}
+                onRestart={resetGameHandler}
+              />
             ) : pickedNumber ? (
               <GameScreen
                 userNumber={pickedNumber}
@@ -71,8 +101,14 @@ const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
   },
+  backgroundContainer: {
+    flex: 1,
+  },
   screen: {
     flex: 1,
+    alignItems: "center",
+    width: "100%",
+    padding: 16,
   },
   backgroundImage: {
     opacity: 0.2,

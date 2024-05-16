@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+
 import Title from "../components/ui/Title";
 import NumberContainer from "../components/game/NumberContainer";
 import PrimaryButton from "../components/ui/PrimaryButton";
+
+import { AntDesign } from "@expo/vector-icons";
+import Colors from "../constants/colors";
 
 function generateRandomBetween(min: number, max: number, exclude: number) {
   const rndNum = Math.floor(Math.random() * (max - min)) + min;
@@ -22,11 +26,17 @@ const GameScreen = ({
   onRestart,
 }: {
   userNumber: number;
-  onGameOver: () => void;
+  onGameOver: (round: number) => void;
   onRestart: () => void;
 }) => {
-  const initialBuess = generateRandomBetween(min, max, userNumber);
-  const [currentGuess, setCurrentGuess] = useState(initialBuess);
+  const initialGuess = generateRandomBetween(min, max, userNumber);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [roundes, setRoundes] = useState<
+    {
+      guessedNumber: number;
+      direction: "lower" | "higher";
+    }[]
+  >([]);
 
   const nextGuessHandler = (direction: "lower" | "higher") => {
     if (
@@ -42,17 +52,23 @@ const GameScreen = ({
       min = currentGuess + 1;
     }
 
+    setRoundes((prevRoundes) => [
+      { guessedNumber: currentGuess, direction },
+      ...prevRoundes,
+    ]);
     const nextNum = generateRandomBetween(min, max, currentGuess);
     setCurrentGuess(nextNum);
 
     if (nextNum === userNumber) {
       Alert.alert("성공! 선택한 숫자는" + nextNum + "입니다!");
-      return onGameOver();
+      min = 1;
+      max = 100;
+      return onGameOver(roundes.length + 1);
     }
   };
 
   return (
-    <View style={styles.screenContainer}>
+    <>
       <Title text={"maybe it is..."} />
       <NumberContainer>{currentGuess}</NumberContainer>
       <View>
@@ -64,33 +80,69 @@ const GameScreen = ({
             onPress={() => nextGuessHandler("higher")}
             customStyle={{ buttonContainer: { width: 60 } }}
           >
-            +
+            <AntDesign name="plus" color={"white"} />
           </PrimaryButton>
           <PrimaryButton
             onPress={() => nextGuessHandler("lower")}
             customStyle={{ buttonContainer: { width: 60 } }}
           >
-            -
+            <AntDesign name="minus" color={"white"} />
           </PrimaryButton>
         </View>
       </View>
-      <View></View>
-      <View>
-        <PrimaryButton onPress={onRestart}>reset</PrimaryButton>
+      <View style={styles.logContainer}>
+        <FlatList
+          data={roundes}
+          renderItem={(logItem) => (
+            <View style={styles.logItem}>
+              <Text style={{ color: "white" }}>
+                {logItem.item.guessedNumber}
+              </Text>
+              <AntDesign
+                name={
+                  logItem.item.direction === "higher" ? "arrowup" : "arrowdown"
+                }
+                color={"white"}
+              />
+            </View>
+          )}
+          keyExtractor={(item) => `${item.guessedNumber}`}
+        />
       </View>
-    </View>
+      <View>
+        <PrimaryButton
+          onPress={() => {
+            min = 1;
+            max = 100;
+            onRestart();
+          }}
+        >
+          reset
+        </PrimaryButton>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
-  },
   buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  logContainer: {
+    flex: 1,
+    marginVertical: 16,
+    width: "100%",
+  },
+  logItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 4,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+    backgroundColor: Colors.primary600,
   },
 });
 

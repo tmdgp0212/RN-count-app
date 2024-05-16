@@ -17,7 +17,7 @@ const Title = ({ text }: Props) => {
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "open-sans-bold",
     textAlign: "center",
     color: "white",
     padding: 24,
